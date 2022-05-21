@@ -1,7 +1,7 @@
 # Online Shop #
 
 Display data by calling an already built API
-Still to do: modify cart items quantity and delete item from shopping cart functions to implement / validate form inputs / confirm order
+Still to do: validate form inputs / confirm order
 
 ### Back end Prerequisites ###
 
