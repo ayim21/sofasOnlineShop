@@ -1,7 +1,13 @@
 # Online Shop #
 
-Display data by calling an already built API
-Still to do: validate form inputs / confirm order
+HOME PAGE: Display all items data by calling an already built API
+
+PRODUCT PAGE: Display one item data / Possibility to add items into shopping cart
+
+CART PAGE: Display shopping cart items / Modify items qty / remove item from shopping cart / RegExp to validate FORM inputs / Confirm and send order to API
+
+CONFIRMATION PAGE: display order number
+
 
 ### Back end Prerequisites ###
 
