@@ -14,10 +14,10 @@ const Home = {
         }
     },
     created() {
-        this.displayInfo();
+        this.getItems();
     },
     methods: {
-        displayInfo() {
+        getItems() {
             axios.get('http://localhost:3000/api/products')
             .then(res => {
                 for (let i = 0; i < res.data.length; i++) {
@@ -32,7 +32,35 @@ const Home = {
 
 const Product = {
     template: '#product',
-    name: 'Product'
+    name: 'Product',
+    data() {
+        return {
+            item: [{
+                _id: '',
+                imageUrl: '',
+                altTxt: '',
+                name: '',
+                price: '',
+                description: '',
+                colors: ''
+            }]
+        }
+    },
+    created() {
+        this.getOneItem();
+    },
+    methods: {
+        getOneItem() {
+            const productId = this.$route.params._id;
+            axios.get(`http://localhost:3000/api/products/${productId}`)
+            .then(res => {
+
+                    this.item = res.data;
+                    
+                console.log(res.data)
+            }).catch(err => console.log(err))
+        }
+    }
 }
 
 const routes = [
