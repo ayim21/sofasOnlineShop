@@ -1,12 +1,16 @@
-# Online Shop #
+### Front end ###
 
+## Branch Main ##
 HOME PAGE: Display all items data by calling an already built API
 
 PRODUCT PAGE: Display one item data / Possibility to add items into shopping cart
 
-CART PAGE: Display shopping cart items / Modify items qty / remove item from shopping cart / RegExp to validate FORM inputs / Confirm and send order to API
+CART PAGE: Display shopping cart items / Modify shopping cart items qty / remove item from shopping cart / RegExp to validate FORM inputs / Confirm and send order to API
 
 CONFIRMATION PAGE: display order number
+
+## Branch Vuejs ##
+Framework VUEJS --> in process
 
 
 ### Back end Prerequisites ###
