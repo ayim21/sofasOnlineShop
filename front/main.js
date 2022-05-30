@@ -54,11 +54,10 @@ const Product = {
             const productId = this.$route.params._id;
             axios.get(`http://localhost:3000/api/products/${productId}`)
             .then(res => {
-                    this.item = res.data;
-                    for(let i = 0; i < res.data.colors.length; i++) {
-                        this.item.colors[i] = res.data.colors[i]
-                        //console.log(res.data.colors[i])
-                    }
+                this.item = res.data;
+                for(let i = 0; i < res.data.colors.length; i++) {
+                    this.item.colors[i] = res.data.colors[i];
+                }
                 console.log(res.data)
             }).catch(err => console.log(err))
         },
@@ -109,7 +108,6 @@ const Product = {
             
                 //Save the cart with new item added into
                 localStorage.setItem('cart', JSON.stringify(cart));
-                //router.push({ path: `/${itemId}`, force: true })
                 this.$router.go();
             }
         }
@@ -136,13 +134,51 @@ const Cart = {
                 totalQty: '',
                 totalPrice: ''
             }],
-            cart: false
+            cart: false,
+            firstName: '',
+            lastName: '',
+            address: '',
+            city: '',
+            email: '',
+            validFirstName: '',
+            validLastName: '',
+            validAddress: '',
+            validCity: '',
+            validEmail: '',
+            firstNameErrorMsg: '',
+            lastNameErrorMsg: '',
+            addressErrorMsg: '',
+            cityErrorMsg: '',
+            emailErrorMsg: ''
         }
     },
     created() {
         this.fromShoppingCart();
         this.orderTotalQty();
         this.orderTotalPrice();
+    },
+
+    watch: {
+        firstName(value) {
+            this.firstName = value;
+            this.validateFirstName(value);
+        },
+        lastName(value) {
+            this.lastName = value;
+            this.validateLastName(value);
+        },
+        address(value) {
+            this.address = value;
+            this.validateAddress(value);
+        },
+        city(value) {
+            this.city = value;
+            this.validateCity(value);
+        },
+        email(value) {
+            this.email = value;
+            this.validateEmail(value);
+        },
     },
     methods: {
         fromShoppingCart() {
@@ -161,27 +197,33 @@ const Cart = {
         orderTotalQty() {
             let cart = JSON.parse(localStorage.getItem('cart'));
             let totalQty = 0;
-            for (let i = 0; i < cart.length; i++) {
-                totalQty += Number(cart[i].quantity);
+
+            if (cart == null || cart.length == 0) {
+                this.order.totalQty = 0;
+            } else {
+                for (let i = 0; i < cart.length; i++) {
+                    totalQty += Number(cart[i].quantity);
+                }
+                this.order.totalQty = totalQty;
             }
-            console.log(totalQty)
-            this.order.totalQty = totalQty;
         },
         orderTotalPrice() {
             let cart = JSON.parse(localStorage.getItem('cart'));
             let totalPrice = 0;
-            for (let i = 0; i < cart.length; i++) {
-                let itemTotal = Number(cart[i].quantity) * Number(cart[i].price);
-                console.log(itemTotal)
-                totalPrice += itemTotal;
+
+            if (cart == null || cart.length == 0) {
+                this.order.totalPrice = 0;
+            } else {
+                for (let i = 0; i < cart.length; i++) {
+                    let itemTotal = Number(cart[i].quantity) * Number(cart[i].price);
+                    totalPrice += itemTotal;
+                }
+                this.order.totalPrice = totalPrice.toFixed(2);
             }
-            console.log(totalPrice)
-            this.order.totalPrice = totalPrice.toFixed(2);
         },
         deleteItem(index) {
             let cart = JSON.parse(localStorage.getItem('cart'));
             //index helps to select the right delete button
-            console.log(index)
             cart.splice(index, 1);
             localStorage.setItem('cart', JSON.stringify(cart));
             this.$router.go();
@@ -189,9 +231,8 @@ const Cart = {
         },
         modifyItemQty(index) {
             let cart = JSON.parse(localStorage.getItem('cart'));
-            console.log(index);
             let itemQtyInput = document.getElementsByClassName('itemQuantity');
-            console.log(itemQtyInput[index].value)
+
             if (itemQtyInput[index].value <= 0) {
                 itemQtyInput[index].value = 0;
                 cart.splice(index, 1);
@@ -207,6 +248,125 @@ const Cart = {
                 localStorage.setItem('cart', JSON.stringify(cart));
                 this.$router.go();
             }
+        },
+        validateFirstName(value) {
+            const firstNameField = document.querySelector('#firstName')
+            if (/^[A-Za-z éèëôöîï-]+$/.test(value)) {
+                firstNameField.style.border = 'medium solid rgb(76, 187, 23)';
+                this.firstNameErrorMsg = '';
+                this.validFirstName = true;
+            } else {
+                firstNameField.style.border = 'medium solid rgb(253, 45, 1)';
+                this.firstNameErrorMsg = 'Veuillez saisir votre prénom.';
+                this.validFirstName = false;
+            }
+        },
+        validateLastName(value) {
+            const lastNameField = document.querySelector('#lastName')
+            if (/^[A-Za-z éèëôöîï\'-]+$/.test(value)) {
+                lastNameField.style.border = 'medium solid rgb(76, 187, 23)';
+                this.lastNameErrorMsg = '';
+                this.validLastName = true;
+            } else {
+                lastNameField.style.border = 'medium solid rgb(253, 45, 1)';
+                this.lastNameErrorMsg = 'Veuillez saisir votre nom.';
+                this.validLastName = false;
+            }
+        },
+        validateAddress(value) {
+            const addressField = document.querySelector('#address')
+            if (/[A-Za-zéèëôîï0-9\'\.\-\s\,]{5}/.test(value)) {
+                addressField.style.border = 'medium solid rgb(76, 187, 23)';
+                this.addressErrorMsg = '';
+                this.validAddress = true;
+            } else {
+                addressField.style.border = 'medium solid rgb(253, 45, 1)';
+                this.addressErrorMsg = 'Veuillez saisir votre adresse.';
+                this.validAddress = false;
+            }
+        },
+        validateCity(value) {
+            const cityField = document.querySelector('#city')
+            if (/[A-Za-zéèëôîï0-9\'\.\-\s\,]{2}/.test(value)) {
+                cityField.style.border = 'medium solid rgb(76, 187, 23)';
+                this.cityErrorMsg = '';
+                this.validCity = true;
+            } else {
+                cityField.style.border = 'medium solid rgb(253, 45, 1)';
+                this.cityErrorMsg = 'Veuillez saisir votre ville.';
+                this.validCity = false;
+            }
+        },
+        validateEmail(value) {
+            const emailField = document.querySelector('#email')
+            if (/^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/.test(value)) {
+                emailField.style.border = 'medium solid rgb(76, 187, 23)';
+                this.emailErrorMsg = '';
+                this.validEmail = true;
+            } else {
+                emailField.style.border = 'medium solid rgb(253, 45, 1)';
+                this.emailErrorMsg = 'Veuillez saisir votre email.';
+                this.validEmail = false;
+            }
+        },
+        confirmOrder() {
+            const products = [];
+            const cart = JSON.parse(localStorage.getItem('cart'));
+            if (cart != null || cart.length != 0) {
+                for (let item of cart) {
+                    products.push(item.id);
+                }
+            }; 
+            const contact = {
+                firstName: this.firstName,
+                lastName: this.lastName,
+                address: this.address,
+                city: this.city,
+                email: this.email
+            };
+
+            if (this.validFirstName == true && 
+                this.validLastName == true && 
+                this.validAddress == true && 
+                this.validCity == true &&
+                this.validEmail == true) {
+                //POST request
+                const toSendToApi = {
+                    products,
+                    contact
+                }; 
+                console.log(toSendToApi)      
+                axios.post('http://localhost:3000/api/products/order', toSendToApi)
+                .then(res => {
+                    let orderId = res.data.orderId;
+                    localStorage.clear();
+                    router.push({ path: `/cart/${orderId}` });
+                })
+                .catch( err => {
+                    console.log(err)
+                })
+            } else {
+                alert('Veuillez vérifier que tous les champs sont correctements remplis.')
+            }
+        }
+    }
+}
+
+/* CONFIRMATION VIEW */
+const Confirmation = {
+    template: '#confirmation',
+    name: 'Confirmation',
+    data () {
+        return {
+            orderId: ''
+        }
+    },
+    created() {
+        this.getOrderId();
+    },
+    methods: {
+        getOrderId() {
+            this.orderId = this.$route.params.orderId;
         }
     }
 }
@@ -214,7 +374,8 @@ const Cart = {
 const routes = [
     { path: '/', name: 'home', component: Home },
     { path: '/:_id', name: 'product', component: Product },
-    { path: '/cart', name: 'cart', component: Cart }
+    { path: '/cart', name: 'cart', component: Cart },
+    { path: '/cart/:orderId', name: 'confirmation', component: Confirmation }
 ]
 
 const router = VueRouter.createRouter({
