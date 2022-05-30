@@ -10,7 +10,7 @@ CART PAGE: Display shopping cart items / Modify shopping cart items qty / remove
 CONFIRMATION PAGE: display order number
 
 ## Branch Vuejs ##
-Framework VUEJS --> in process
+Framework VUEJS --> completed
 
 
 ### Back end Prerequisites ###
