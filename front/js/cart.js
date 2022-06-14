@@ -8,7 +8,9 @@ console.log(cart);
 
 /* ARRAY WITH SHOPPING CART ITEMS ID */
 let products = [];
-if (cart != null || cart.length != 0) {
+if (cart == null) {
+    console.log(products)
+} else if (cart != null || cart.length != 0) {
     for (let item of cart) {
         products.push(item.id);
     }
